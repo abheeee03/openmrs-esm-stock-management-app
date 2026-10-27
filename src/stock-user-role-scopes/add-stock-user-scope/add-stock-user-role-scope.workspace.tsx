@@ -243,7 +243,7 @@ const AddStockUserRoleScope: React.FC<Workspace2DefinitionProps<AddStockUserRole
   const onAllLocationsChanged = (event: ChangeEvent<HTMLInputElement>) => {
     setFormModel({
       ...formModel,
-      locations: event.target.checked ? getAllLocations(stockLocations ?? []) : [],
+      locations: event.target.checked ? getAllLocations(stockLocations ?? [], formModel?.locations ?? []) : [],
     });
   };
 

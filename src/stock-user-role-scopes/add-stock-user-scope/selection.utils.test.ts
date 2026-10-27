@@ -14,7 +14,7 @@ describe('scope group selection helpers', () => {
     ]);
   });
 
-  it('selects every location with descendants disabled', () => {
+  it('selects every location with descendants disabled by default', () => {
     expect(
       getAllLocations([
         { id: 'store', name: 'Store' },
@@ -26,9 +26,22 @@ describe('scope group selection helpers', () => {
     ]);
   });
 
-  it('clears a group when select all is unchecked', () => {
-    expect(getAllOperationTypes([] as any)).toEqual([]);
-    expect(getAllLocations([] as any)).toEqual([]);
+  it('preserves existing location entries when selecting all', () => {
+    const existingLocation = {
+      locationUuid: 'store',
+      locationName: 'Old store name',
+      enableDescendants: true,
+    };
+
+    expect(
+      getAllLocations(
+        [
+          { id: 'store', name: 'Store' },
+          { id: 'pharmacy', name: 'Pharmacy' },
+        ] as any,
+        [existingLocation as any],
+      ),
+    ).toEqual([existingLocation, { locationUuid: 'pharmacy', locationName: 'Pharmacy', enableDescendants: false }]);
   });
 
   it('reports checked, unchecked and indeterminate group states', () => {

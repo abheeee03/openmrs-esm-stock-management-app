@@ -13,9 +13,21 @@ export const getAllOperationTypes = (operations: StockOperationType[]): UserRole
     operationTypeUuid: operation.uuid,
   })) as UserRoleScopeOperationType[];
 
-export const getAllLocations = (locations: fhir.Location[]): UserRoleScopeLocation[] =>
-  locations.map((location) => ({
-    locationName: location.name,
-    locationUuid: location.id,
-    enableDescendants: false,
-  })) as UserRoleScopeLocation[];
+export const getAllLocations = (
+  locations: fhir.Location[],
+  existingLocations: UserRoleScopeLocation[] = [],
+): UserRoleScopeLocation[] => {
+  const selectedLocations = new Map(existingLocations.map((location) => [location.locationUuid, location]));
+
+  locations.forEach((location) => {
+    if (!selectedLocations.has(location.id)) {
+      selectedLocations.set(location.id, {
+        locationName: location.name,
+        locationUuid: location.id,
+        enableDescendants: false,
+      } as UserRoleScopeLocation);
+    }
+  });
+
+  return Array.from(selectedLocations.values());
+};
